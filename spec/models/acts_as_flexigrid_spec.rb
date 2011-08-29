@@ -6,7 +6,10 @@ describe ActsAsFlexigrid do
   end
 
   describe ".flexigrid" do
-    subject { User.flexigrid({ "page" => 1, "rp" => 10}) }
+    before do
+      @opt = { "page" => 1, "rp" => 10}
+    end
+    subject { User.flexigrid(@opt) }
     it "should have specified 3 keys" do
       should have_key(:rows)
       should have_key(:total)
@@ -19,6 +22,22 @@ describe ActsAsFlexigrid do
 
     it "should 10 data of rows" do
       subject[:rows].should have(10).items
+    end
+
+    describe "Extend args" do
+      it "should include second args" do
+        action_str = "<a href='/edit'>Edit</a>"
+        res = User.flexigrid(@opt, { :action => action_str})
+        res[:rows].first[:cell][:action].should == action_str
+      end
+
+      it "should include block args" do
+        ext_val = "EXT_VAL"
+        res = User.flexigrid(@opt) do |site|
+          { :ext_key => ext_val }
+        end
+        res[:rows].first[:cell][:ext_key].should == ext_val
+      end
     end
   end
 end

@@ -24,9 +24,11 @@ module ActsAsFlexigrid
   end
 
   module ClassMethods
-    def flexigrid(params, options = {})
+    def flexigrid(params, options = {}, &block)
       rows = flexigrid_scope(params).map do |site|
-        { :id => site.id, :cell => site.attributes.merge(options) }
+        cell = site.attributes.merge(options)
+        cell.merge!(yield(site)) if block_given?
+        { :id => site.id, :cell => cell }
       end
       { :rows => rows, :total => self.count, :page => params["page"] }
     end
