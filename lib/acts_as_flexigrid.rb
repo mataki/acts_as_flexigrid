@@ -1,5 +1,34 @@
 require "acts_as_flexigrid/version"
+require "active_support/concern"
 
 module ActsAsFlexigrid
-  # Your code goes here...
+  extend ActiveSupport::Concern
+
+  included do
+    scope :flexigrid_scope, lambda { |params|
+      page(params["page"]).per(params["rp"]).flexigrid_order(params["sortname"], params["sortorder"]).flexigrid_where(params["qtype"], params["query"])
+    }
+
+    scope :flexigrid_where, lambda { |type, query|
+      if type and type.strip.present? and query and query.strip.present?
+        where("`#{type.strip}` LIKE ?", # "``
+              "%#{query.strip}%")
+      end
+    }
+
+    scope :flexigrid_order, lambda { |name, order|
+      if name.present? and order.present?
+        order("#{name} #{order}")
+      end
+    }
+  end
+
+  module ClassMethods
+    def flexigrid(params, options = {})
+      rows = flexigrid_scope(params).map do |site|
+        { :id => site.id, :cell => site.attributes.merge(options) }
+      end
+      { :rows => rows, :total => self.count, :page => params["page"] }
+    end
+  end
 end
