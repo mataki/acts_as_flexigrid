@@ -33,11 +33,21 @@ describe ActsAsFlexigrid do
 
       it "should include block args" do
         ext_val = "EXT_VAL"
-        res = User.flexigrid(@opt) do |site|
-          { :ext_key => ext_val }
+        res = User.flexigrid(@opt) do |obj|
+          { :ext_key => ext_val, :site_name => obj.name }
         end
+        res[:rows].first[:cell].should have_key(:site_name)
         res[:rows].first[:cell][:ext_key].should == ext_val
       end
+    end
+  end
+
+  describe ".flexgrid_where" do
+    it "should return 100" do
+      User.flexigrid_where("name", "001").count.should == 1
+    end
+    it "should return quated sql" do
+      User.flexi
     end
   end
 end

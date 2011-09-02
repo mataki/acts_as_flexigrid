@@ -11,8 +11,7 @@ module ActsAsFlexigrid
 
     scope :flexigrid_where, lambda { |type, query|
       if type and type.strip.present? and query and query.strip.present?
-        where("`#{type.strip}` LIKE ?", # "``
-              "%#{query.strip}%")
+        where("#{quoted_table_name}.#{connection.quote_column_name(type.strip)} LIKE :val", {:val => "%#{query.strip}%"})
       end
     }
 
