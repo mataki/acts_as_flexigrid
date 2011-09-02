@@ -1,0 +1,65 @@
+= acts_as_flexigrid
+
+ActiveRecord plugin to use easily Flexigrid that is jQuery plugin for grid table
+
+== Installation
+
+  gem install acts_as_flexigrid
+
+== How to use
+
+1. Download Flexigrid from http://flexigrid.info/ and place javascript and css files.
+
+2. Include to models
+
+  class Site < ActiveRecord::Base
+    include ActsAsFlexigrid
+  end
+
+3. Get json response for Flexigrid
+
+  class SitesController < ApplicationController
+
+    def index
+      @sites = Site.where({...})
+      respond_to do |format|
+        format.html
+        format.json do
+          if params.delete(:flexigrid).present?
+            @site = @sites.flexigrid(params)
+          end
+          render :json => @sites
+        end
+      end
+
+      ...
+
+4. Set javascript and view
+
+application.js
+
+  $("#sites-grid").flexigrid({
+    method: "GET",
+    url: "/sites.json?flexigrid=true",
+    dataTyep: "json",
+    colModel: [
+      {display: 'Name', name: 'name, sortable: true},
+      ...
+    ],
+    searchitems: [
+      {display: "Name", name: 'name, isdefault: true},
+      ....
+    ],
+    sortname: "name",
+    sortorder: "asc",
+    usepager: true,
+    rp: 10
+  })
+
+view / app/views/sites/index.html.erb
+
+  <div id="sites-grid"></div>
+
+== Copyright
+
+Copyright (c) 2011 Akihiro Matsumura. See LICENSE for details.
