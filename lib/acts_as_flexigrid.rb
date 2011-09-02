@@ -16,8 +16,8 @@ module ActsAsFlexigrid
     }
 
     scope :flexigrid_order, lambda { |name, order|
-      order = order.downcase == "asc" ? "asc" : "desc"
       if name.present? and order.present?
+        order = order.downcase == "asc" ? "asc" : "desc"
         order("#{quoted_table_name}.#{connection.quote_column_name(name.strip)} #{order}")
       end
     }

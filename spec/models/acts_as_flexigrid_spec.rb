@@ -42,12 +42,26 @@ describe ActsAsFlexigrid do
     end
   end
 
-  describe ".flexgrid_where" do
+  describe ".flexigrid_where" do
     it "should return 100" do
       User.flexigrid_where("name", "001").count.should == 1
     end
     it "should return quated sql" do
-      User.flexi
+      User.flexigrid_where("name", "001").to_sql.should == "SELECT \"users\".* FROM \"users\" WHERE (\"users\".\"name\" LIKE '%001%')"
+    end
+  end
+
+  describe ".flexigrid_order" do
+    it "should set desc" do
+      User.flexigrid_order('name', "desc").first.name.should == "user100"
+    end
+
+    it "should return quated sql" do
+      User.flexigrid_order('name', "asc").to_sql.should == "SELECT \"users\".* FROM \"users\" ORDER BY \"users\".\"name\" asc"
+    end
+
+    it "should set desc with valid param" do
+      User.flexigrid_order('name', "hoge").to_sql.should include('desc')
     end
   end
 end
