@@ -13,6 +13,10 @@ ActiveRecord::Base.establish_connection('test')
 
 class User < ActiveRecord::Base
   include ActsAsFlexigrid
+
+  scope :age_flexigrid_where, lambda { |query|
+    where(:age => query)
+  }
 end
 
 class CreateAllTables < ActiveRecord::Migration

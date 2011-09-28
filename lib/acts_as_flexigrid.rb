@@ -11,8 +11,17 @@ module ActsAsFlexigrid
 
     scope :flexigrid_where, lambda { |type, query|
       if type and type.strip.present? and query and query.strip.present?
-        where("#{quoted_table_name}.#{connection.quote_column_name(type.strip)} LIKE :val", {:val => "%#{query.strip}%"})
+        method_name = "#{type}_flexigrid_where"
+        if self.respond_to?(method_name)
+          self.send(method_name, query)
+        else
+          any_flexigrid_where(type, query)
+        end
       end
+    }
+
+    scope :any_flexigrid_where, lambda { |type, query|
+      where("#{quoted_table_name}.#{connection.quote_column_name(type.strip)} LIKE :val", {:val => "%#{query.strip}%"})
     }
 
     scope :flexigrid_order, lambda { |name, order|

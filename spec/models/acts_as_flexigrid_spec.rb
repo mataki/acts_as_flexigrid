@@ -49,6 +49,10 @@ describe ActsAsFlexigrid do
     it "should return quated sql" do
       User.flexigrid_where("name", "001").to_sql.should == "SELECT \"users\".* FROM \"users\" WHERE (\"users\".\"name\" LIKE '%001%')"
     end
+
+    describe "defined type specific where" do
+      User.flexigrid_where('age', "10").to_sql.should == "SELECT \"users\".* FROM \"users\" WHERE \"users\".\"age\" = '10'"
+    end
   end
 
   describe ".flexigrid_order" do
