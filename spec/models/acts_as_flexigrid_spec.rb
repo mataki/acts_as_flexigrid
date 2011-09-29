@@ -40,6 +40,15 @@ describe ActsAsFlexigrid do
         res[:rows].first[:cell][:ext_key].should == ext_val
       end
     end
+
+    describe "with search query" do
+      before do
+        @opt = @opt.merge({ "qtype" => "name", "query" => "001"})
+      end
+      it "should return 1 by total" do
+        subject[:total].should == 1
+      end
+    end
   end
 
   describe ".flexigrid_where" do

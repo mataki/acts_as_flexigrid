@@ -39,7 +39,7 @@ module ActsAsFlexigrid
         cell.merge!(yield(site)) if block_given?
         { :id => site.id, :cell => cell }
       end
-      { :rows => rows, :total => self.count, :page => params["page"] }
+      { :rows => rows, :total => self.flexigrid_where(params['qtype'], params['query']).count, :page => params["page"] }
     end
   end
 end
