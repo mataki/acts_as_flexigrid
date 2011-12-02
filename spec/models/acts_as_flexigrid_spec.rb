@@ -56,11 +56,13 @@ describe ActsAsFlexigrid do
       User.flexigrid_where("name", "001").count.should == 1
     end
     it "should return quated sql" do
-      User.flexigrid_where("name", "001").to_sql.should == "SELECT \"users\".* FROM \"users\" WHERE (\"users\".\"name\" LIKE '%001%')"
+      User.flexigrid_where("name", "001").to_sql.should == "SELECT \"users\".* FROM \"users\"  WHERE (\"users\".\"name\" LIKE '%001%')"
     end
 
     describe "defined type specific where" do
-      User.flexigrid_where('age', "10").to_sql.should == "SELECT \"users\".* FROM \"users\" WHERE \"users\".\"age\" = '10'"
+      it "should return quated sql" do
+        User.flexigrid_where('age', "10").to_sql.should == "SELECT \"users\".* FROM \"users\"  WHERE \"users\".\"age\" = 10"
+      end
     end
   end
 
@@ -70,7 +72,7 @@ describe ActsAsFlexigrid do
     end
 
     it "should return quated sql" do
-      User.flexigrid_order('name', "asc").to_sql.should == "SELECT \"users\".* FROM \"users\" ORDER BY \"users\".\"name\" asc"
+      User.flexigrid_order('name', "asc").to_sql.should == "SELECT \"users\".* FROM \"users\"  ORDER BY \"users\".\"name\" asc"
     end
 
     it "should set desc with valid param" do
